@@ -8,13 +8,21 @@
           <el-input v-model="title"></el-input>
         </el-form-item>
         <el-form-item label="资讯图片">
-          <el-upload ref="upload" action="http://localhost:3000/upload" enctype="multipart/form-data" list-type="picture-card" :limit=limit
-            :on-exceed="exceed" :on-preview="handlePictureCardPreview" :on-remove="handleRemove"
-            :on-success="handleAvatarSuccess">
+          <el-upload
+            ref="upload"
+            action="https://api.yswf.xyz/api/scenic/upload"
+            enctype="multipart/form-data"
+            list-type="picture-card"
+            :limit="limit"
+            :on-exceed="exceed"
+            :on-preview="handlePictureCardPreview"
+            :on-remove="handleRemove"
+            :on-success="handleAvatarSuccess"
+          >
             <i class="el-icon-plus"></i>
           </el-upload>
           <el-dialog :visible.sync="dialogVisible">
-            <img width="100%" :src="dialogImageUrl" alt="">
+            <img width="100%" :src="dialogImageUrl" alt="" />
           </el-dialog>
         </el-form-item>
         <el-form-item label="资讯内容">
@@ -30,89 +38,88 @@
 </template>
 
 <script>
-  import {
-    activityP,
-    updateActivity
-  } from '@/utils/apply.url';
-  export default {
-    name: 'editActivity',
-    data() {
-      return {
-        dialogImageUrl: '',
-        dialogVisible: false,
-        limit: 1,
+import {
+  activityP,
+  updateActivity
+} from '@/utils/apply.url';
+export default {
+  name: 'editActivity',
+  data () {
+    return {
+      dialogImageUrl: '',
+      dialogVisible: false,
+      limit: 1,
+      title: '',
+      desc: '',
+      activityData: {
         title: '',
         desc: '',
-        activityData: {
-          title: '',
-          desc: '',
-        }
-      }
-    },
-    watch: {
-
-    },
-    mounted() {
-      if (this.$route.query.title != undefined) {
-        this.$nextTick(() => {
-          this.title = this.$route.query.title;
-          this.desc = this.$route.query.desc;
-        })
-      }
-    },
-    methods: {
-      // 上传文件成功的回调
-      handleAvatarSuccess(res, file, fileList) {
-        console.log(res)
-        this.dialogImageUrl=res.data.path;
-      },
-      onSubmit() {
-        this.$refs.upload.submit()
-        this.activityData = {
-          title: this.title,
-          desc: this.desc,
-          image:this.dialogImageUrl
-        }
-        if (this.$route.query.title != undefined) {
-          this.activityData.id = this.$route.query.id;
-          updateActivity(this.activityData, 'post').then(res => {
-            this.$router.push({
-              path: '/home/activityInfo',
-            });
-          }).catch(err => {
-            console.log(22)
-            this.$message.success('获取失败' || res.msg);
-          });
-        } else {
-          activityP(this.activityData, 'post').then(res => {
-            this.$router.push({
-              path: '/home/activityInfo',
-            });
-          }).catch(err => {
-            console.log(22)
-            this.$message.success('获取失败' || res.msg);
-          });
-        }
-      },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-      handlePictureCardPreview(file) {
-        this.dialogImageUrl = file.url;
-        this.dialogVisible = true;
-      },
-      exceed() {
-        console.log('只能上传一个文件')
       }
     }
+  },
+  watch: {
+
+  },
+  mounted () {
+    if (this.$route.query.title != undefined) {
+      this.$nextTick(() => {
+        this.title = this.$route.query.title;
+        this.desc = this.$route.query.desc;
+      })
+    }
+  },
+  methods: {
+    // 上传文件成功的回调
+    handleAvatarSuccess (res, file, fileList) {
+      console.log(res)
+      this.dialogImageUrl = res.data.path;
+    },
+    onSubmit () {
+      this.$refs.upload.submit()
+      this.activityData = {
+        title: this.title,
+        desc: this.desc,
+        image: this.dialogImageUrl
+      }
+      if (this.$route.query.title != undefined) {
+        this.activityData.id = this.$route.query.id;
+        updateActivity(this.activityData, 'post').then(res => {
+          this.$router.push({
+            path: '/home/activityInfo',
+          });
+        }).catch(err => {
+          console.log(22)
+          this.$message.success('获取失败' || res.msg);
+        });
+      } else {
+        activityP(this.activityData, 'post').then(res => {
+          this.$router.push({
+            path: '/home/activityInfo',
+          });
+        }).catch(err => {
+          console.log(22)
+          this.$message.success('获取失败' || res.msg);
+        });
+      }
+    },
+    handleRemove (file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    exceed () {
+      console.log('只能上传一个文件')
+    }
   }
+}
 
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scope>
-  .scenicSpot-form {
-    width: 80%;
-    margin: auto;
-  }
-
+.scenicSpot-form {
+  width: 80%;
+  margin: auto;
+}
 </style>
