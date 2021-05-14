@@ -30,7 +30,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">立即创建</el-button>
-          <el-button>取消</el-button>
+          <el-button @click="black">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -111,6 +111,9 @@ export default {
     },
     exceed () {
       console.log('只能上传一个文件')
+    },
+    black () {
+      this.$router.back(-1)
     }
   }
 }

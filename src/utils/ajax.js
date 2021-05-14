@@ -7,6 +7,7 @@ import {
 const ajaxBaseUrl = 'https://api.yswf.xyz/api/scenic'
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {
+  config.headers.Authorization = window.sessionStorage.getItem('token')
   // 在发送请求之前做些什么
   return config;
 }, function (error) {

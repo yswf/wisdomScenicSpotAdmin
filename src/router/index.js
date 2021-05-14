@@ -35,7 +35,7 @@ export const constantRoutes = [
   },
   {
     path: '/home',
-    redirect:'/home/scenicSpotIntro',
+    redirect: '/home/scenicSpotIntro',
     component: () => import('@/layout'),
     meta: {
       title: '主页'
@@ -58,8 +58,11 @@ const router = createRouter()
 // 路由拦截
 router.beforeEach((to, from, next) => {
   // 设置全局标题
-  document.title = to.meta.title || '智慧景区后台管理系统'
-  next();
+  document.title = to.meta.title || '红枫湖景区后台管理系统'
+  if (to.path === '/login') return next()
+  const tokenStr = window.sessionStorage.getItem('token')
+  if (!tokenStr) return next('/login')
+  next()
 })
 
 export default router

@@ -13,7 +13,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">立即创建</el-button>
-          <el-button>取消</el-button>
+          <el-button @click="black">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -21,72 +21,74 @@
 </template>
 
 <script>
-  import {
-    ticket,updateTicket
-  } from '@/utils/apply.url';
-  export default {
-    name: 'editTicket',
-    data() {
-      return {
-        dialogImageUrl: '',
-        dialogVisible: false,
-        limit: 1,
+import {
+  ticket, updateTicket
+} from '@/utils/apply.url';
+export default {
+  name: 'editTicket',
+  data () {
+    return {
+      dialogImageUrl: '',
+      dialogVisible: false,
+      limit: 1,
+      title: '',
+      price: 0,
+      desc: '',
+      ticketData: {
         title: '',
-        price:0,
+        price: 0,
         desc: '',
-        ticketData: {
-          title: '',
-          price:0,
-          desc: '',
-        }
       }
-    },
-    mounted() {
+    }
+  },
+  mounted () {
+    if (typeof this.$route.query == 'object') {
+      this.$nextTick(() => {
+        this.title = this.$route.query.title;
+        this.price = this.$route.query.price;
+        this.desc = this.$route.query.desc;
+      })
+    }
+  },
+  methods: {
+    onSubmit () {
+      this.ticketData = {
+        title: this.title,
+        price: this.price,
+        desc: this.desc,
+      }
       if (typeof this.$route.query == 'object') {
-        this.$nextTick(() => {
-          this.title = this.$route.query.title;
-          this.price = this.$route.query.price;
-          this.desc = this.$route.query.desc;
-        })
+        this.ticketData.id = this.$route.query.id;
+        ticket(this.ticketData, 'post').then(res => {
+          this.$router.push({
+            path: '/home/bookTicket',
+          });
+        }).catch(err => {
+          console.log(22)
+          this.$message.success('获取失败' || res.msg);
+        });
+      } else {
+        updateTicket(this.activityData, 'post').then(res => {
+          this.$router.push({
+            path: '/home/bookTicket ',
+          });
+        }).catch(err => {
+          console.log(22)
+          this.$message.success('获取失败' || res.msg);
+        });
       }
     },
-    methods: {
-      onSubmit() {
-        this.ticketData = {
-          title: this.title,
-          price:this.price,
-          desc: this.desc,
-        }
-        if (typeof this.$route.query == 'object') {
-          this.ticketData.id = this.$route.query.id;
-          ticket(this.ticketData, 'post').then(res => {
-            this.$router.push({
-              path: '/home/bookTicket',
-            });
-          }).catch(err => {
-            console.log(22)
-            this.$message.success('获取失败' || res.msg);
-          });
-        } else {
-            updateTicket(this.activityData, 'post').then(res => {
-            this.$router.push({
-              path: '/home/bookTicket ',
-            });
-          }).catch(err => {
-            console.log(22)
-            this.$message.success('获取失败' || res.msg);
-          });
-        }
-      },
+    black () {
+      this.$router.back(-1)
     }
   }
+}
 
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scope>
-  .ticket-form {
-    width: 80%;
-    margin: auto;
-  }
-
+.ticket-form {
+  width: 80%;
+  margin: auto;
+}
 </style>
